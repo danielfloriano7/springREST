@@ -1,6 +1,5 @@
 package com.algaworks.algalog.api.controller;
 
-
 import java.util.List;
 //import java.util.Optional;
 
@@ -30,17 +29,17 @@ import com.algaworks.algalog.domain.service.CatalogoClienteService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-@RestController 
+@RestController
 @RequestMapping("/clientes")
 public class ClienteController {
 
 //	@PersistenceContext
 //	private EntityManager manager;
-	
+
 //	@Autowired
 	private ClienteRepository clienteRepository;
 	private CatalogoClienteService catalogoClienteService;
-	
+
 // Funciona na mesma jeito.
 //	public ClienteController(ClienteRepository clienteRepository) {
 //		super();
@@ -49,21 +48,20 @@ public class ClienteController {
 
 	@GetMapping
 	public List<Cliente> listar() {
-		
+
 		return clienteRepository.findAll();
-		
+
 //		return manager.createQuery("from Cliente", Cliente.class)
 //				.getResultList();
 	}
-	
+
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> buscar(@PathVariable Long clienteId) {
-		
+
 		return clienteRepository.findById(clienteId)
 //				.map(cliente -> ResponseEntity.ok(cliente))
-				.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
-		
+				.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+
 //		Optional<Cliente> cliente = clienteRepository.findById(clienteId);
 //		
 //		if(cliente.isPresent()) {
@@ -71,47 +69,39 @@ public class ClienteController {
 //		}
 //		return ResponseEntity.notFound().build();
 	}
-	
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
-		
+
 //		return clienteRepository.save(cliente);
 		return catalogoClienteService.salvar(cliente);
 	}
-	
+
 	@PutMapping("/{clienteId}")
-	public ResponseEntity<Cliente> atualizar(@PathVariable Long clienteId,@Valid @RequestBody Cliente cliente) {
-		
-		if(!clienteRepository.existsById(clienteId)) {
+	public ResponseEntity<Cliente> atualizar(@PathVariable Long clienteId, @Valid @RequestBody Cliente cliente) {
+
+		if (!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		cliente.setId(clienteId);
 //		cliente = clienteRepository.save(cliente);
 		cliente = catalogoClienteService.salvar(cliente);
-		
+
 		return ResponseEntity.ok(cliente);
 	}
-	
+
 	@DeleteMapping("/{clienteId}")
 	public ResponseEntity<Void> remover(@PathVariable Long clienteId) {
-		
-		if(!clienteRepository.existsById(clienteId)) {
+
+		if (!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 //		clienteRepository.deleteById(clienteId);
 		catalogoClienteService.excluir(clienteId);
-		
-		return ResponseEntity.noContent().build();	}
+
+		return ResponseEntity.noContent().build();
+	}
 }
-
-
-
-
-
-
-
-
-
